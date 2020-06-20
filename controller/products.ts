@@ -64,9 +64,8 @@ const addProduct = async ({
   request: any;
   response: any;
 }) => {
-  const body = await request.body();
-
   if (request.hasBody) {
+    const body = await request.body();
     const product: Product = body.value;
     product.id = v4.generate();
     products.push(product);
@@ -86,10 +85,66 @@ const addProduct = async ({
 
 // @desc    Update product
 // @route   PUT /api/v1/products/:id
-const updateProduct = ({ response }: { response: any }) => {};
+const updateProduct = async ({
+  params,
+  request,
+  response,
+}: {
+  params: { id: string };
+  request: any;
+  response: any;
+}) => {
+  const product: Product | undefined = products.find(
+    (item) => item.id === params.id
+  );
+
+  if (product) {
+    const body = await request.body();
+    const updateData: { name?: string; description?: string; price?: number } =
+      body.value;
+
+    products = products.map((p) =>
+      p.id == params.id ? { ...p, ...updateData } : p
+    );
+
+    response.status = 200;
+    response.body = {
+      success: true,
+      data: products,
+    };
+  } else {
+    response.status = 404;
+    response.body = {
+      success: false,
+      message: "Product not found",
+    };
+  }
+};
 
 // @desc    Delete product
 // @route   DELETE /api/v1/products/:id
-const deleteProduct = ({ response }: { response: any }) => {};
+const deleteProduct = ({
+  params,
+  response,
+}: {
+  params: { id: string };
+  response: any;
+}) => {
+  const product = products.find((p) => p.id === params.id);
+  if (product) {
+    products = products.filter((p) => p.id !== params.id);
+    response.status = 202;
+    response.body = {
+      success: true,
+      message: "Product removed",
+    };
+  } else {
+    response.status = 400;
+    response.body = {
+      success: false,
+      message: "Product not found",
+    };
+  }
+};
 
 export { getProducts, getProduct, addProduct, updateProduct, deleteProduct };
