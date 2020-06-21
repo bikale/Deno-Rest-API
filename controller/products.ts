@@ -1,5 +1,18 @@
+import { Client } from "https://deno.land/x/postgres/mod.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
 import { Product } from "../types.ts";
+// import {dbCreds} from '../config.ts'
+
+//connecting to postrges db
+
+const client = new Client({
+  user: "bk",
+  database: "denoapi",
+  password: "12345",
+  hostname: "localhost",
+  port: 5432,
+});
+
 let products: Product[] = [
   {
     id: "1",

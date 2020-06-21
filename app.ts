@@ -6,6 +6,6 @@ const app = new Application();
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-const port = 5000;
+const port = Deno.env.get("PORT") || 5000;
 console.log(`Server running on http://localhost:${port} 🦕`);
-await app.listen({ port });
+await app.listen({ port: +port });
